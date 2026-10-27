@@ -1,6 +1,8 @@
 // 个人名片页：把基础组件与布局系统组合成一个完整静态页面。
 import 'package:flutter/material.dart'; // Material 组件库：Scaffold、Container、Text、Row 等
 
+import 'layout_lab_page.dart'; // 布局实验台：六种对齐、弹性分配与层叠练习
+
 /// 课堂作业六：个人名片页（单页）。
 class ProfileCardPage extends StatefulWidget {
   const ProfileCardPage({super.key}); // 有状态组件：签名输入需要 controller 与刷新
@@ -36,8 +38,20 @@ class _ProfileCardPageState extends State<ProfileCardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 顶部导航栏
-      appBar: AppBar(title: const Text('个人名片')), // 页面标题
+      // 顶部导航栏：标题 + 进入实验台的入口
+      appBar: AppBar(
+        title: const Text('个人名片'), // 页面标题
+        actions: [
+          IconButton(
+            tooltip: '布局实验台', // 长按提示文字
+            onPressed: () => Navigator.of(context).push(
+              // 压入新页面，返回时自动回到名片页
+              MaterialPageRoute(builder: (_) => const LayoutLabPage()),
+            ),
+            icon: const Icon(Icons.science_outlined), // 实验台图标
+          ),
+        ],
+      ),
       // 宽屏限宽 480 并水平居中，保持手机版式。
       body: Align(
         alignment: Alignment.topCenter, // 内容靠上，短页面时不垂直居中
