@@ -15,6 +15,7 @@ void main() {
     await tester.pumpWidget(const ProfileCardApp()); // 构建整个应用并完成首帧
 
     expect(find.text('张欣怡'), findsOneWidget); // 姓名已渲染
+    expect(find.text('女 · 168cm · 50kg'), findsOneWidget); // 基本信息已渲染
     expect(find.text('关注'), findsOneWidget); // 统计条第一个标签已渲染
     expect(find.text('关注 TA'), findsOneWidget); // 主按钮已渲染
   });

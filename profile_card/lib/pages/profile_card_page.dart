@@ -1,5 +1,5 @@
-// 个人名片页：在骨架上加容器装饰、状态徽标与常用组件。
-import 'package:flutter/material.dart'; // Material 组件库：Container、BoxDecoration、TextField 等
+// 个人名片页：把基础组件与布局系统组合成一个完整静态页面。
+import 'package:flutter/material.dart'; // Material 组件库：Scaffold、Container、Text、Row 等
 
 /// 课堂作业六：个人名片页（单页）。
 class ProfileCardPage extends StatefulWidget {
@@ -36,10 +36,11 @@ class _ProfileCardPageState extends State<ProfileCardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('个人名片')), // 顶部导航栏
+      // 顶部导航栏
+      appBar: AppBar(title: const Text('个人名片')), // 页面标题
       // 宽屏限宽 480 并水平居中，保持手机版式。
       body: Align(
-        alignment: Alignment.topCenter, // 内容靠上
+        alignment: Alignment.topCenter, // 内容靠上，短页面时不垂直居中
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 480), // 最大宽度 480
           child: SingleChildScrollView(
@@ -89,6 +90,12 @@ class _ProfileCardPageState extends State<ProfileCardPage> {
             textAlign: TextAlign.center, // 与姓名保持居中对齐
             style: TextStyle(fontSize: 13, color: Colors.black54), // 次要信息用灰色小字
           ),
+          const SizedBox(height: 4), // 签名与基本信息之间的留白
+          const Text(
+            '女 · 168cm · 50kg',
+            textAlign: TextAlign.center, // 基本信息居中
+            style: TextStyle(fontSize: 12, color: Colors.black45), // 更浅的灰色，弱化层级
+          ),
           const SizedBox(height: 20), // 与统计条拉开层次
           _buildStatBar(), // 关注/粉丝/获赞统计
           const SizedBox(height: 20), // 统计条与标签云的间距
@@ -97,7 +104,7 @@ class _ProfileCardPageState extends State<ProfileCardPage> {
           SizedBox(
             height: 44, // 固定按钮高度，视觉上更整齐
             child: ElevatedButton.icon(
-              onPressed: () {}, // 静态页面，暂无业务逻辑
+              onPressed: () {}, // 当前为静态页面，点击暂无业务逻辑
               icon: const Icon(Icons.add, size: 18), // 左侧加号图标
               label: const Text('关注 TA'), // 按钮文字
             ),
@@ -110,7 +117,7 @@ class _ProfileCardPageState extends State<ProfileCardPage> {
   /// 统计条：三个 Expanded 等分宽度。
   Widget _buildStatBar() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12), // 上下留白 12
+      padding: const EdgeInsets.symmetric(vertical: 12), // 上下留白 12，左右由 Expanded 分配
       decoration: BoxDecoration(
         color: const Color(0xFFF5F6FA), // 浅灰底色，与白色卡片区分
         borderRadius: BorderRadius.circular(12), // 圆角 12
