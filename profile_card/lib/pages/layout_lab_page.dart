@@ -1,5 +1,5 @@
-// 布局实验台：用生活里的摆法演示对齐与弹性分配。
-import 'package:flutter/material.dart'; // Material 组件库：Row、ListView、Switch 等
+// 布局实验台：用生活里的摆法演示对齐、弹性分配与层叠。
+import 'package:flutter/material.dart'; // Material 组件库：Row、Stack、Switch、ListView 等
 
 /// 布局实验台页面。
 class LayoutLabPage extends StatefulWidget {
@@ -157,6 +157,87 @@ class _LayoutLabPageState extends State<LayoutLabPage> {
               ),
             ],
           ),
+          const SizedBox(height: 16), // 两节之间的间距
+
+          // ---------- 第三节：压在照片上的小东西 ----------
+          _LabSection(
+            title: '三、压在照片上的小东西',
+            subtitle: '小贴纸直接叠在照片上，不用另占位置',
+            children: [
+              const Text(
+                '外卖骑手小王：头像右下角的绿点表示在线',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600), // 场景标题
+              ),
+              const SizedBox(height: 10), // 标题与头像的间距
+              Row(
+                children: const [
+                  _AvatarBadgeDemo(), // 头像 + 绿点
+                  SizedBox(width: 16), // 头像与文字的间距
+                  Expanded(
+                    child: Text(
+                      '正在接单，绿点亮着；\n收工休息时绿点就灭了。',
+                      style: TextStyle(fontSize: 12, color: Colors.black54), // 生活化描述
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6), // 与参数标注的间距
+              const Text(
+                'Positioned(right: 2, bottom: 2)',
+                style: TextStyle(fontSize: 11, color: Colors.black38), // 参数小字
+              ),
+              const SizedBox(height: 20), // 两个场景之间的间距
+              const Text(
+                '春游照片：角落压着一张地点卡片',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600), // 场景标题
+              ),
+              const SizedBox(height: 10), // 标题与照片的间距
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12), // 照片与卡片一起裁成圆角
+                child: Stack(
+                  children: [
+                    // 照片：用渐变色块代替，不用外链图片
+                    Container(
+                      height: 140, // 照片高度决定 Stack 高度
+                      width: double.infinity, // 横向撑满
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft, // 渐变起点：左上
+                          end: Alignment.bottomRight, // 渐变终点：右下
+                          colors: [Color(0xFF4C6FFF), Color(0xFF8A5CFF)], // 天空到湖面
+                        ),
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.photo_camera, size: 56, color: Colors.white54), // 照片占位图标
+                      ),
+                    ),
+                    // 地点卡片：压在照片底部
+                    Positioned(
+                      left: 12, // 距左边缘 12
+                      right: 12, // 距右边缘 12
+                      bottom: 12, // 距底部 12
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), // 卡片内边距
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.45), // 半透明黑底，白字看得清
+                          borderRadius: BorderRadius.circular(8), // 卡片圆角 8
+                        ),
+                        child: const Text(
+                          '西湖 · 2026 年 4 月',
+                          style: TextStyle(fontSize: 13, color: Colors.white), // 白字
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 6), // 与参数标注的间距
+              const Text(
+                'Positioned(left: 12, right: 12, bottom: 12)',
+                style: TextStyle(fontSize: 11, color: Colors.black38), // 参数小字
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -296,6 +377,37 @@ class _FlexBar extends StatelessWidget {
         textAlign: TextAlign.center, // 多行时居中
         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color), // 主题色加粗小字
       ),
+    );
+  }
+}
+
+/// 外卖骑手头像：右下角绿点表示在线。
+class _AvatarBadgeDemo extends StatelessWidget {
+  const _AvatarBadgeDemo();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        const CircleAvatar(
+          radius: 36, // 半径 36，直径 72
+          backgroundColor: Color(0xFFE8EDFF), // 浅蓝底
+          child: Icon(Icons.delivery_dining, size: 40, color: Color(0xFF4C6FFF)), // 骑手图标
+        ),
+        Positioned(
+          right: 2, // 贴着头像右边缘
+          bottom: 2, // 贴着头像下边缘
+          child: Container(
+            width: 14, // 绿点直径 14
+            height: 14,
+            decoration: BoxDecoration(
+              color: const Color(0xFF2ECC71), // 绿色在线点
+              shape: BoxShape.circle, // 圆形
+              border: Border.all(color: Colors.white, width: 2), // 2px 白边，与头像分开
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
