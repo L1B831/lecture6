@@ -1,9 +1,17 @@
-// 布局实验台：用生活里的摆法演示对齐。
-import 'package:flutter/material.dart'; // Material 组件库：Row、ListView 等
+// 布局实验台：用生活里的摆法演示对齐与弹性分配。
+import 'package:flutter/material.dart'; // Material 组件库：Row、ListView、Switch 等
 
 /// 布局实验台页面。
-class LayoutLabPage extends StatelessWidget {
-  const LayoutLabPage({super.key}); // 本节只演示对齐，无交互，用无状态组件
+class LayoutLabPage extends StatefulWidget {
+  const LayoutLabPage({super.key}); // 有状态：披萨分份的开关需要切换
+
+  @override
+  State<LayoutLabPage> createState() => _LayoutLabPageState(); // 创建状态对象
+}
+
+class _LayoutLabPageState extends State<LayoutLabPage> {
+  /// 打开后妹妹换成固定宽的一整条，观察桌子放不下。
+  bool _takeWholeStrip = false; // 默认关闭，保证页面初始摆得下
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +103,57 @@ class LayoutLabPage extends StatelessWidget {
                     _LifeItem(icon: Icons.menu_book, label: '杂志', color: Color(0xFFF5A623), height: 80), // 最高
                   ],
                 ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16), // 两节之间的间距
+
+          // ---------- 第二节：一张披萨按 2:1:1 分 ----------
+          _LabSection(
+            title: '二、一张长条披萨分给三个人',
+            subtitle: '桌子就 360 宽，大哥出两份钱吃两份',
+            children: [
+              // 桌面宽度固定 360：浏览器再宽，桌子也只有这么长
+              Center(
+                child: SizedBox(
+                  width: 360, // 桌面长度
+                  child: Row(
+                    children: [
+                      // 大哥那份：flex 为 2，占 2 份宽度
+                      const Expanded(flex: 2, child: _FlexBar(label: '大哥 · 2 份', color: Color(0xFF4C6FFF))),
+                      const SizedBox(width: 8), // 份与份之间的刀口
+                      // 二哥那份：flex 为 1，占 1 份宽度
+                      const Expanded(flex: 1, child: _FlexBar(label: '二哥 · 1 份', color: Color(0xFF2ECC71))),
+                      const SizedBox(width: 8), // 份与份之间的刀口
+                      // 妹妹那份：随开关切换成固定宽，模拟自带一整条
+                      if (_takeWholeStrip)
+                        const SizedBox(
+                          width: 400, // 固定 400 宽，超过 360 的桌面
+                          child: _FlexBar(label: '妹妹 · 自带整条', color: Color(0xFFF5A623)),
+                        )
+                      else
+                        // 正常状态：按 1 份参与分配
+                        const Expanded(flex: 1, child: _FlexBar(label: '妹妹 · 1 份', color: Color(0xFFF5A623))),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4), // 与开关行的间距
+              Row(
+                children: [
+                  // 开关说明：妹妹不按份分，自己带一整条
+                  const Expanded(
+                    child: Text(
+                      '妹妹不按份分，自己带一整条过来',
+                      style: TextStyle(fontSize: 12, color: Colors.black54), // 小字说明
+                    ),
+                  ),
+                  // 开关：切换妹妹那份的宽度来源
+                  Switch(
+                    value: _takeWholeStrip, // 当前状态
+                    onChanged: (value) => setState(() => _takeWholeStrip = value), // 切换后重建
+                  ),
+                ],
               ),
             ],
           ),
@@ -209,6 +268,33 @@ class _LifeItem extends StatelessWidget {
           Icon(icon, size: 20, color: color), // 物件图标
           Text(label, style: TextStyle(fontSize: 9, color: color)), // 物件名字
         ],
+      ),
+    );
+  }
+}
+
+/// 披萨的一份：带边框与文字的色块。
+class _FlexBar extends StatelessWidget {
+  const _FlexBar({required this.label, required this.color}); // 份的名字与颜色
+
+  final String label; // 例如“大哥 · 2 份”
+  final Color color; // 该份的主题色
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 48, // 固定高度，突出宽度变化
+      alignment: Alignment.center, // 文字居中
+      padding: const EdgeInsets.symmetric(horizontal: 6), // 左右留 6，文字不贴边
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12), // 主题色的浅色填充
+        borderRadius: BorderRadius.circular(8), // 圆角 8
+        border: Border.all(color: color), // 1px 主题色描边
+      ),
+      child: Text(
+        label, // 显示份的归属与份数
+        textAlign: TextAlign.center, // 多行时居中
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color), // 主题色加粗小字
       ),
     );
   }
